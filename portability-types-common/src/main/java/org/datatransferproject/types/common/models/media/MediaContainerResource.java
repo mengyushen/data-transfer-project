@@ -17,15 +17,18 @@ import org.datatransferproject.types.common.models.photos.PhotoModel;
 import org.datatransferproject.types.common.models.photos.PhotosContainerResource;
 import org.datatransferproject.types.common.models.videos.VideoModel;
 import org.datatransferproject.types.common.models.videos.VideosContainerResource;
+import org.datatransferproject.types.common.models.motions.MotionItemResource;
 
 @JsonTypeName("MediaContainerResource")
 public class MediaContainerResource extends ContainerResource {
   public static final String PHOTOS_COUNT_DATA_NAME = "photosCount";
   public static final String ALBUMS_COUNT_DATA_NAME = "albumsCount";
   public static final String VIDEOS_COUNT_DATA_NAME = "videosCount";
+  public static final String MOTIONS_COUNT_DATA_NAME = "motionsCount";
   private static final String ROOT_ALBUM = "Transferred Photos";
   private final Collection<PhotoModel> photos;
   private final Collection<VideoModel> videos;
+  private final Collection<MotionItemResource> motions;
   private Collection<MediaAlbum> albums;
 
   @JsonCreator
@@ -36,6 +39,19 @@ public class MediaContainerResource extends ContainerResource {
     this.albums = albums == null ? ImmutableList.of() : albums;
     this.photos = photos == null ? ImmutableList.of() : photos;
     this.videos = videos == null ? ImmutableList.of() : videos;
+    this.motions = ImmutableList.of();
+  }
+
+  @JsonCreator
+  public MediaContainerResource(
+      @JsonProperty("albums") Collection<MediaAlbum> albums,
+      @JsonProperty("photos") Collection<PhotoModel> photos,
+      @JsonProperty("videos") Collection<VideoModel> videos,
+      @JsonProperty("motions") Collection<MotionItemResource> motions) {
+    this.albums = albums == null ? ImmutableList.of() : albums;
+    this.photos = photos == null ? ImmutableList.of() : photos;
+    this.videos = videos == null ? ImmutableList.of() : videos;
+    this.motions = motions == null ? ImmutableList.of() : motions;
   }
 
   /**
@@ -108,12 +124,17 @@ public class MediaContainerResource extends ContainerResource {
     return videos;
   }
 
+  public Collection<MotionItemResource> getMotions() {
+    return motions;
+  }
+
   @Override
   public Map<String, Integer> getCounts() {
     return new ImmutableMap.Builder<String, Integer>()
         .put(ALBUMS_COUNT_DATA_NAME, albums.size())
         .put(PHOTOS_COUNT_DATA_NAME, photos.size())
         .put(VIDEOS_COUNT_DATA_NAME, videos.size())
+        .put(MOTIONS_COUNT_DATA_NAME, motions.size())
         .build();
   }
 
@@ -124,7 +145,8 @@ public class MediaContainerResource extends ContainerResource {
     MediaContainerResource that = (MediaContainerResource) o;
     return Objects.equals(getAlbums(), that.getAlbums())
         && Objects.equals(getPhotos(), that.getPhotos())
-        && Objects.equals(getVideos(), that.getVideos());
+        && Objects.equals(getVideos(), that.getVideos())
+        && Objects.equals(getMotions(), that.getMotions());
   }
 
   public void transmogrify(TransmogrificationConfig config) {
@@ -201,6 +223,7 @@ public class MediaContainerResource extends ContainerResource {
         .add("albums", getAlbums())
         .add("photos", getPhotos())
         .add("videos", getVideos())
+        .add("motions", getMotions())
         .add("counts", getCounts())
         .toString();
   }
