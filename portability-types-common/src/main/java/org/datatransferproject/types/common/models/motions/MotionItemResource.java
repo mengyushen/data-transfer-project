@@ -11,7 +11,7 @@ import org.datatransferproject.types.transfer.models.ItemResource;
 import org.datatransferproject.types.common.models.photos.PhotoModel;
 import org.datatransferproject.types.common.models.videos.VideoModel;
 
-@JsonTypeName("MotionContainerResource")
+@JsonTypeName("MotionItemResource")
 public class MotionItemResource extends ItemResource {
   private final PhotoModel photo;
   private final VideoModel paired_video;
